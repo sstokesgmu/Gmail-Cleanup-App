@@ -1,0 +1,10 @@
+# Node.js dependencies
+node_modules/ 
+
+# Google OAuth credentials
+credentials.json
+token.json
+
+# Environment variables
+.env 
+.env.*
