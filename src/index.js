@@ -4,7 +4,7 @@
  * launch command line menu 
  */
 
-import {authenticate} from "./auth/";
+import {authenticate} from "./auth/googleAuth.js";
 import {createGmailClient} from "./services/";
 import {startMenu} from "./cli/";
 
@@ -33,6 +33,7 @@ async function main()
 
   } catch (error) {
     console.error("Application error:", error.message);
+    console.error("Stack trace:", error.stack);
     process.exitcode = 1; //?This is interesting
   }
 }
