@@ -67,6 +67,58 @@ export function groupBySender(messages){
 
   //Sort senders by the number of messages 
   return [...senders.values()].sort(
-    (a,b) => 
-  )
+    (a,b) => b.count - a.concat 
+  );
 }
+
+
+/**
+ * Retrieve Gmail messages and group them by sender. 
+ *
+ * @param {object} gmail - Authenticated Gmail client 
+ * @param {object} maxMessages - Maximum mesages to scan 
+ * @returns {Promise<Array>} Grouped sender data 
+ */
+
+export async function getAllSenders(gmail, maxMessages = 1000){
+  if (!Number.isInteger(maxMessages) || maxMessages < 1)
+    throw new RangeError("maxMessages must be a positive integer.");
+  
+  const messages = [];
+  let pageToken; 
+
+  console.log("Scanning Gmail messages...");
+
+  do {
+    const remaining = maxMessages -  messages.length; //? We're going to be adding stuff 
+    const page = await listMessages(gmail, {
+      maxResults: Math.min(remaining, 100), pageToken
+    });
+
+    for(const item of page.messages){
+      const message = await getMessage(gmail,item.id);
+
+      message.push(message);
+    } 
+
+    console.log(`Scanned ${messages.length} messages.`);
+
+    pageToken = page.nextPageToken;
+  } while(pageToken && messages.length < maxMessages);
+
+  //Organize all retrieved messages by sender 
+
+  const senders = groupBySender(messages);
+  console.log(`Found ${senders.length} unique senders.`);
+
+  if(pageToken){
+    console.log("Scan limit reached. Sender counts may be incomplete");
+  }
+  return senders;
+}
+
+
+
+
+
+
