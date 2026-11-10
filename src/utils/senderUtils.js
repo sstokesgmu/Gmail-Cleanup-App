@@ -1,4 +1,4 @@
-import { listMessages, getMessage } from "../services/gmailServices";
+import { listMessages, getMessage } from "../services/gmailServices.js";
 
 /**
  * Extract the sender's name and email 
@@ -50,7 +50,7 @@ export function groupBySender(messages){
       continue;
     }
 
-    if(!sender.has(sender.email)) {
+    if(!senders.has(sender.email)) {
       senders.set(sender.email, {
         name: sender.name, 
         email: sender.email, 
@@ -67,7 +67,7 @@ export function groupBySender(messages){
 
   //Sort senders by the number of messages 
   return [...senders.values()].sort(
-    (a,b) => b.count - a.concat 
+    (a,b) => b.count - a.count
   );
 }
 
