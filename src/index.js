@@ -5,8 +5,8 @@
  */
 
 import {authenticate} from "./auth/googleAuth.js";
-import {createGmailClient} from "./services/";
-import {startMenu} from "./cli/";
+import {createGmailClient} from "./services/gmailServices.js";
+import {startMenu} from "./cli/cli.js";
 
 /*
  * Main entry point for Gmail Cleaner 
@@ -20,7 +20,15 @@ async function main()
 
 
   try {
-      //Step 1: Authenticate with Google
+      const mockMode = process.env.MOCK_MODE === "true";
+      
+      if(mockMode) {
+        console.log("Running in MOCK Mode\n");
+
+        //! No Gmail authentication needed 
+        await startMenu(null,  {mockMode: true});
+      } else {
+       //Step 1: Authenticate with Google
       console.log("Authenticating with GMAIL... \n");
       const auth = await authenticate();
 
@@ -29,8 +37,8 @@ async function main()
 
       //Step 3: Start the interactive menu
       console.log("Successfully connected to GMAIL!\n");
-      await startMenu();
-
+      await startMenu(gmail, {mockMode: false});
+    }
   } catch (error) {
     console.error("Application error:", error.message);
     console.error("Stack trace:", error.stack);

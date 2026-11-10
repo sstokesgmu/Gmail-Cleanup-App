@@ -1,8 +1,12 @@
 import readline from "node:readline/promises";
 import {stdin as input, stdout as output} from "node:process";
 
+import { groupBySender } from "../utils/senderUtils.js";
+import { mockMessages } from "../test/mockMessages.js";
 
-export async function startMenu(gmailClient){
+
+
+export async function startMenu(gmailClient, {mockMode = false} = {}){
   const rl = readline.createInterface({input, output});
   
 
@@ -21,11 +25,16 @@ export async function startMenu(gmailClient){
         case "1":
           console.log("Loading emails ... ");
 
+          if(!mockMode){
+            console.log("Real Gmail retrieval is not implemented yet.");
+            break;
+          }
+
 
 
           // Next: retrieve messages using gmail 
-          const messages = await listMessages(gmail);
-          const senders = groubBySender(messages);
+          const messages = mockMessages;
+          const senders = groupBySender(messages);
 
           console.table(
             senders.map(({name, email, count}) =>({
