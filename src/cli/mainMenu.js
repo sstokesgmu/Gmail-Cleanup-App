@@ -1,9 +1,8 @@
 import readline from "node:readline/promises";
 import {stdin as input, stdout as output} from "node:process";
 
-import { groupBySender } from "../utils/senderUtils.js";
 import { mockMessages } from "../test/mockMessages.js";
-
+import { listSenderMenu } from "../cli/senderMenu.js";
 
 
 export async function startMenu(gmailClient, {mockMode = false} = {}){
@@ -16,7 +15,9 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
     while (running) {
       console.log("========== Main Menu ======");
       console.log("1. List emails by sender");
-      console.log("2. Exit");
+      console.log("2. Search emails");
+      console.log("3. View Cleanup Statistics");
+      console.log("4. Exit");
 
       const choice = await rl.question("Choose an option: ");
 
@@ -29,20 +30,17 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
             console.log("Real Gmail retrieval is not implemented yet.");
             break;
           }
-
-
-
-          // Next: retrieve messages using gmail 
+          // Another Choice here allow the user to grab
           const messages = mockMessages;
-          const senders = groupBySender(messages);
-
-          console.table(
-            senders.map(({name, email, count}) =>({
-            name, email, count }))
-          );
-
+          await listSenderMenu(messages, rl);
           break;
         case "2":
+          console.log("Loading search bar ...");
+        break;
+        case "3":
+          console.log("Loading cleanup statistics ...");
+        break;
+        case "4":
           console.log("Goodbye!");
           running = false;
           break;
@@ -55,3 +53,5 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
     rl.close();
   }
 }
+
+

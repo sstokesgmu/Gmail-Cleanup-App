@@ -6,7 +6,7 @@
 
 import {authenticate} from "./auth/googleAuth.js";
 import {createGmailClient} from "./services/gmailServices.js";
-import {startMenu} from "./cli/cli.js";
+import {startMenu} from "./cli/mainMenu.js";
 
 /*
  * Main entry point for Gmail Cleaner 

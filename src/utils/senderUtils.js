@@ -39,6 +39,7 @@ export function parseSender(from){
 export function groupBySender(messages){
   const senders = new Map();
 
+  
   for(const message of messages)
   {
     let sender;
@@ -64,6 +65,7 @@ export function groupBySender(messages){
     group.count++;
     group.messages.push(message);
   }
+
 
   //Sort senders by the number of messages 
   return [...senders.values()].sort(
