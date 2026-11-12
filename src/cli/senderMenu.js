@@ -1,4 +1,6 @@
 import {groupBySender} from "../utils/senderUtils.js";
+import { viewSenderThreads } from "../cli/senderThreadMenu.js";
+
 
 export async function listSenderMenu(messages, rl)
 {
@@ -6,6 +8,7 @@ export async function listSenderMenu(messages, rl)
   let isRunning = true;
   const senders = groupBySender(messages);
   const numberOfSenders = senders.length; 
+
     while(isRunning)
     {
       console.log("========= List of Senders ==========");
@@ -32,8 +35,10 @@ export async function listSenderMenu(messages, rl)
             console.log("Invalid sender index.");
             break;
           }
-          //Call to list full email and messages 
-        break;
+
+          // Pass the selectedSender to the next Menu 
+          await viewSenderThreads(senders[index],rl);
+          break;
         case "2":
           isRunning = false;
         break;
