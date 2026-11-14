@@ -2,7 +2,7 @@ import {groupBySender} from "../utils/senderUtils.js";
 import { viewSenderThreads } from "../cli/senderThreadMenu.js";
 
 
-export async function listSenderMenu(messages, rl)
+export async function listSenderMenu(messages, rl, gmail)
 {
   
   let isRunning = true;
@@ -37,7 +37,7 @@ export async function listSenderMenu(messages, rl)
           }
 
           // Pass the selectedSender to the next Menu 
-          await viewSenderThreads(senders[index],rl);
+          await viewSenderThreads(senders[index],rl, gmail);
           break;
         case "2":
           isRunning = false;

@@ -32,7 +32,7 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
           }
           // Another Choice here allow the user to grab
           const messages = mockMessages;
-          await listSenderMenu(messages, rl);
+          await listSenderMenu(messages, rl,gmailClient);
           break;
         case "2":
           console.log("Loading search bar ...");

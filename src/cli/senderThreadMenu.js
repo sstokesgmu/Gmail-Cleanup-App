@@ -1,6 +1,6 @@
+import { trashMessages } from "../services/deleteMessages.js"
 
-
-export async function viewSenderThreads(sender, rl)
+export async function viewSenderThreads(sender, rl, gmail)
 {
   let isRunning = true;
 
@@ -30,7 +30,8 @@ export async function viewSenderThreads(sender, rl)
     console.log("2. Select message for deletion");
     console.log("3. View selected messages");
     console.log("4. Clear selection");
-    console.log("5. Return to sender list");
+    console.log("5. Trash selected messages");
+    console.log("6. Return to sender list");
   
 
     const choice = await rl.question("Choose an option: ");
@@ -106,6 +107,43 @@ export async function viewSenderThreads(sender, rl)
       }
 
       case "5": {
+        if(selectedMessageIds.size === 0){
+          console.log("No messages selected.");
+          break;
+        }
+
+        console.log(`You selected ${selectedMessageIds.size} messages for deletion.`);
+
+        const confirm = await rl.question("Move these messages to Trash? (y/n)");
+
+        if(confirm.trim().toLowerCase() !== "y"){
+          console.log("Deletion cancelled.");
+          break;
+        }
+
+        const { deletedIds, failedIds} = await trashMessages(gmail, [...selectedMessageIds]);
+
+        //Remove successfully trashed messages from the local list        
+        const deletedSet = new Set(deletedIds);
+
+        for(let i = messages.length - 1; i >= 0; i--){
+          if(deletedSet.has(messages[i].id))
+            messages.splice(i,1);
+        }
+
+        // Clear only successfully deleted IDs 
+        for(const id of deletedIds)
+          selectedMessageIds.delete(id);
+
+        sender.count = messages.length; 
+
+        console.log(`Successfully trashed: ${deletedIds.length}`);
+        console.log(`Failed ${failedIds.length}`);
+
+        break;
+      }
+
+      case "6": {
         isRunning = false;
         break;
       }
