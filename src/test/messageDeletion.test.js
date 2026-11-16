@@ -4,8 +4,8 @@ import assert from "node:assert/strict";
 
 import { trashMessages, trashMessage } from "../services/deleteMessages.js"
 
-import { groupBySender } from "../utils/senderUtils";
-import { mockMessages } from "./mockMessages";
+import { groupBySender } from "../utils/senderUtils.js";
+import { mockMessages } from "./mockMessages.js";
 
 
 //Create indapendent test data and a minimal mock of the Gmail Trash Operation
@@ -54,11 +54,7 @@ test("Trash a single message", async () => {
 test("Trash multiple messages", async () => {
   const { gmail, messages } = setup();
 
-  const result = await trashMessages(gmail, [
-    {id: "1"},
-    {id: "2"},
-    {id: "3"}
-  ]);
+  const result = await trashMessages(gmail, ["1", "2", "3" ]);
 
   assert.deepEqual(result.deletedIds, ["1", "2", "3"]);
   assert.deepEqual(result.failedIds, []);
@@ -68,11 +64,11 @@ test("Trash multiple messages", async () => {
 // Test 3: Invalid message ID 
 test("Reject an invalid message ID", async () => {
   const { gmail } = setup();
+
+  const result = await trashMessages(gmail, ["999"]);
   
-  await assert.rejects(
-    trashMessages(gmail, "999"), 
-    /not found/
-  );
+  assert.deepEqual(result.deletedIds, []);
+  assert.deepEqual(result.failedIds, ["999"]);
 });
 
 // Test 4: Missing message ID 
@@ -91,11 +87,7 @@ test("Continue deleting when one message fails", async () => {
 
   failedIds.add("2");
 
-  const result = await trashMessages(gmail, [
-    { id: "1" },
-    { id: "2" },
-    { id: "3"}
-  ]);
+  const result = await trashMessages(gmail, ["1","2","3"]);
 
   assert.deepEqual(result.deletedIds, ["1", "3"]);
   assert.deepEqual(result.failedIds, ["2"]);
