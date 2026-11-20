@@ -3,6 +3,7 @@ import {stdin as input, stdout as output} from "node:process";
 
 import { mockMessages } from "../test/mockMessages.js";
 import { listSenderMenu } from "../cli/senderMenu.js";
+import { searchMenu } from "../cli/searchMenu.js"; 
 
 
 export async function startMenu(gmailClient, {mockMode = false} = {}){
@@ -20,22 +21,21 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
       console.log("4. Exit");
 
       const choice = await rl.question("Choose an option: ");
-
+      if(!mockMode){
+        console.log("Real Gmail retrieval is not implemented yet.");
+        break;
+      }
+      // Another Choice here allow the user to grab
+      const messages = mockMessages;
       switch (choice.trim())
       {
         case "1":
-          console.log("Loading emails ... ");
-
-          if(!mockMode){
-            console.log("Real Gmail retrieval is not implemented yet.");
-            break;
-          }
-          // Another Choice here allow the user to grab
-          const messages = mockMessages;
+          console.log("Loading emails ... ");        
           await listSenderMenu(messages, rl,gmailClient);
           break;
         case "2":
           console.log("Loading search bar ...");
+          await searchMenu(messages, rl);
         break;
         case "3":
           console.log("Loading cleanup statistics ...");

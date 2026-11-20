@@ -28,8 +28,14 @@ export async function searchMenu(messages, rl){
         console.log("Search by Keyword");
         break;
       case "5":
-        console.log("")
+        console.log("Advanced Search");
         break;
+      case "6":
+        isRunning = false;
+        break;
+
+      default:
+        console.log("Invalid option. Please try again.");
     }
     
   }
