@@ -1,3 +1,5 @@
+import { filterMessagesByAge } from "../utils/searchUtils.js"
+
 export async function searchMenu(messages, rl){
   let isRunning = true; 
 
@@ -16,7 +18,34 @@ export async function searchMenu(messages, rl){
     
     switch(choice.trim()){
       case "1":
-        console.log("Search by Age");
+        const input = await rl.question("Find emails older than how many days? ");
+
+
+        if(input.trim() === "") {
+          console.log("Please enter a number.");
+          break;
+        }
+
+        const days = Number(input);
+
+        if(!Number.isFinite(days) || days < 0){
+          console.log("Invalid number of days.");
+          break;
+        }
+
+        const results = filterMessagesByAge(messages, days);
+
+        console.log(`\nFound ${results.length} emails older than ${days} days.`);
+
+        console.table(
+          results.map(({id, from, subject, date}) => ({
+            id, 
+            from,
+            subject, 
+            date 
+          }))
+        );
+
         break;
       case "2":
         console.log("Search by Category");
