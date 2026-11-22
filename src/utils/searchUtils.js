@@ -21,3 +21,52 @@ export function filterMessagesByAge(messages, days){
     return messageDate < cutoff;
   });
 }
+
+
+export function filterMessagesBySender(messages, query) {
+  if (!Array.isArray(messages)) {
+    throw new TypeError("Messages must be an array.");
+  }
+
+  if (typeof query !== "string") {
+    throw new TypeError("Search query must be a string.");
+  }
+
+  const searchTerm = query.trim().toLowerCase();
+
+  if (!searchTerm) {
+    return [];
+  }
+
+  return messages.filter((message) => {
+    const sender = message.from ?? "";
+
+    return typeof sender === "string" &&
+      sender.toLowerCase().includes(searchTerm);
+  });
+}
+
+
+export function filterMessagesByCategory(messages, category) {
+  if (!Array.isArray(messages)) {
+    throw new TypeError("Messages must be an array.");
+  }
+
+  if (typeof category !== "string") {
+    throw new TypeError("Category must be a string.");
+  }
+
+  const searchCategory = category.trim().toLowerCase();
+
+  if (!searchCategory) {
+    return [];
+  }
+
+  return messages.filter((message) => {
+    const messageCategory = message.category ?? "";
+
+    return typeof messageCategory === "string" &&
+      messageCategory.trim().toLowerCase() === searchCategory;
+  });
+}
+

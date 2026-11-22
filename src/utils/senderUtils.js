@@ -68,9 +68,10 @@ export function groupBySender(messages){
 
 
   //Sort senders by the number of messages 
-  return [...senders.values()].sort(
+  let c = [...senders.values()].sort(
     (a,b) => b.count - a.count
   );
+  return 
 }
 
 
