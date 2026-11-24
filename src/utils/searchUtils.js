@@ -70,3 +70,21 @@ export function filterMessagesByCategory(messages, category) {
   });
 }
 
+export function applySearchFilters(messages, filters){
+  let results = messages;
+
+  if(filters.sender){
+    results = filterMessagesBySender(results, filters.sender);
+  }
+
+  if(filters.olderThanDays !== undefined)
+  {
+    results = filterMessagesByAge(results, filters.olderThanDays);
+  }
+
+  if(filters.category){
+    results = filterMessagesByCategory(results, filters.category);
+  }
+
+  return 
+}

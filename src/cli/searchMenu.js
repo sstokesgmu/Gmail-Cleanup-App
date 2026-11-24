@@ -1,4 +1,4 @@
-import { filterMessagesByAge, filterMessagesBySender, filterMessagesByCategory } from "../utils/searchUtils.js"
+import { filterMessagesByAge, filterMessagesBySender, filterMessagesByCategory, applySearchFilters } from "../utils/searchUtils.js"
 
 export async function searchMenu(messages, rl){
   let isRunning = true; 
@@ -92,7 +92,40 @@ export async function searchMenu(messages, rl){
       }
 
       case "4" : {
-        console.log("Search by keyword - Coming Soon");
+        console.log("\n========= Combine Search Filters ====================");
+
+        //Ask for sender 
+        const sender = await rl.question("Enter sender name or email (leave blank to skip)");
+        
+        //Ask for Age 
+        const age = await rl.question("Emails older than how many day? (leave blank to skip)");
+
+        let olderThanDays; 
+
+        if(age.trim() !== "") 
+        {
+          olderThanDays = Number(age);
+
+          if(!Number.isInteger(olderThanDays) || olderThanDays < 0){
+            console.log("Invalid number of days.");
+            break;
+          }        
+        }
+        //Ask for categories 
+        const category = await rl.question("Enter category (leave blank to skip)");
+        const filters = {
+          sender: sender.trim(), olderThanDays, category: category.trim()
+        }
+
+        const results = applySearchFilters(messages, filters);
+        console.log(`\nFound ${results.length} matching emails`);
+
+        console.table(
+          results.map(({id, from, subject, date}) => ({
+            id, from, subject, date 
+          }))
+        );
+
         break;
       }
 
