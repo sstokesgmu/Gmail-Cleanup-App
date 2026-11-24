@@ -1,6 +1,7 @@
 import { filterMessagesByAge, filterMessagesBySender, filterMessagesByCategory, applySearchFilters } from "../utils/searchUtils.js"
+import { searchResultsMenu } from "./searchResultsMenu.js";
 
-export async function searchMenu(messages, rl){
+export async function searchMenu(messages, rl,gmail){
   let isRunning = true; 
 
 
@@ -120,21 +121,16 @@ export async function searchMenu(messages, rl){
         const results = applySearchFilters(messages, filters);
         console.log(`\nFound ${results.length} matching emails`);
 
-        console.table(
-          results.map(({id, from, subject, date}) => ({
-            id, from, subject, date 
-          }))
-        );
+        if(results.length === 0){
+          console.log("No matching emails found.");
+          break;
+        }
 
+        await searchResultsMenu(results, rl, gmail);
         break;
       }
+      case "5": {
 
-      case "5" : {
-        console.log("Advanced Search - Coming Soon");
-        break;
-      }
-
-      case "6": {
         isRunning = false;
         break;
       }

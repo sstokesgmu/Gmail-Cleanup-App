@@ -35,7 +35,7 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
           break;
         case "2":
           console.log("Loading search bar ...");
-          await searchMenu(messages, rl);
+          await searchMenu(messages, rl, gmailClient);
         break;
         case "3":
           console.log("Loading cleanup statistics ...");

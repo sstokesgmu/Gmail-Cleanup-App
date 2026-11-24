@@ -86,5 +86,6 @@ export function applySearchFilters(messages, filters){
     results = filterMessagesByCategory(results, filters.category);
   }
 
-  return 
+  return results;
 }
+
