@@ -1,32 +1,37 @@
 export async function trashMessage(gmail, messageId){
   if(!messageId)
-    throw new Error("Meesage ID is required");
+    throw new Error("Message ID is required");
 
-  if (!gmail)
-    throw new Error("Gmail client is not initalized");
+  // NEW: Handle mock mode 
+  if(process.env.MOCK_MODE === "true"){
+    console.log(`[MOCK] Trash message: ${messageId}`);
+    return messageId;
+  }
 
+  // Real Gmail API 
+  if(!gmail)
+    throw new Error("Gmail client is not initialized");
+  
   await gmail.users.messages.trash({
-    userId: "me",
-    id: messageId
+    userId: "me", id: messageId 
   });
 
-  return messageId; 
+  return messageId 
 }
 
 export async function trashMessages(gmail, messageIds){
   const deletedIds = [];
   const failedIds = [];
 
-  for(const id of messageIds)
-  {
+  for(const id of messageIds){
     try{
       await trashMessage(gmail, id);
       deletedIds.push(id);
-    } catch (e){
-      console.error(`Failed to trahs ${id}: ${e.message}`);
+    } catch(e){
+      console.error(`Failed to trash ${id}: ${e.message}`);
       failedIds.push(id);
     }
   }
-      return { deletedIds, failedIds };
-}
 
+  return { deletedIds, failedIds};
+}

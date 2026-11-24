@@ -12,7 +12,7 @@ async function getMessageIndex(messages, rl) {
 }
 
 
-export async function searchResultsMenu(results, rl, gmail){
+export async function searchResultsMenu(results, rl, gmail, inboxMessages){
   let isRunning = true;
 
   let messages = [...results];
@@ -93,7 +93,7 @@ export async function searchResultsMenu(results, rl, gmail){
 
         console.log("\n============ Selected Messages ==================");
         console.table(
-          selectedMessages.map(message => ({
+          selectedMessges.map(message => ({
             id: message.id,
             from: message.from, 
             subject: message.subject || "(No Subject)",
@@ -109,8 +109,48 @@ export async function searchResultsMenu(results, rl, gmail){
         selectedMessagesIds.clear();
         console.log("Selection cleared.");
         break; 
-      case "6":
+      case "6": {
+        if(selectedMessagesIds.size === 0){
+          console.log("No messages selected for deletion.");
+          break;
+        }
+        
+        const confirmation = await rl.question(`Move ${selectedMessagesIds.size} selected emails to trash? (y/n): `);
+
+        if(confirmation.trim().toLowerCase() !== "y"){
+          console.log("Deletion cancelled.");
+          break;
+        }
+
+        //Convert the Set into an array of messsge IDs
+        const messageIds = [...selectedMessagesIds];
+
+        //Call out deletion services
+        const { deletedIds, failedIds } = await trashMessages(gmail, messageIds);
+
+        const deletedIdSet = new Set(deletedIds);
+
+        // Remove deleted messages from search results
+        messages = messages.filter(message => !deletedIdSet.has(message.id));
+
+        //Remove successfully deleted messages from the original inbox 
+        for (let i = inboxMessages.length -1; i >= 0; i --)
+        {
+          if(deletedIdSet.has(inboxMessages[i].id))
+          {
+            inboxMessages.splice(i,1);
+          }
+        }
+        //Remove successully deleted IDs from selection 
+        for(const id of deletedIds){
+          selectedMessagesIds.delete(id);
+        }
+
+        console.log("\n================= Deletion Summary ===============");
+        console.log(`Successfully trashed: ${deletedIds.length}`);
+        console.log(`Failed: ${failedIds.length}`);
         break;
+      }
       case "7":
         isRunning = false; 
         break;

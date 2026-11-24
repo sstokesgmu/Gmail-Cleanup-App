@@ -126,7 +126,7 @@ export async function searchMenu(messages, rl,gmail){
           break;
         }
 
-        await searchResultsMenu(results, rl, gmail);
+        await searchResultsMenu(results, rl, gmail, messages);
         break;
       }
       case "5": {
