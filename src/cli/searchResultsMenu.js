@@ -1,4 +1,5 @@
 import { trashMessages } from "../services/deleteMessages.js";
+import { recordDeletion } from "../services/statisticsService.js";
 
 async function getMessageIndex(messages, rl) {
   const input = await rl.question("Enter message index: ");
@@ -127,7 +128,10 @@ export async function searchResultsMenu(results, rl, gmail, inboxMessages){
 
         //Call out deletion services
         const { deletedIds, failedIds } = await trashMessages(gmail, messageIds);
-
+        
+        // Record cleanup Statistics 
+        recordDeletion(messages, deletedIds, failedIds);
+        
         const deletedIdSet = new Set(deletedIds);
 
         // Remove deleted messages from search results

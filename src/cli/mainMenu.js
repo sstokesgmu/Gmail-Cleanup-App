@@ -3,16 +3,19 @@ import {stdin as input, stdout as output} from "node:process";
 
 import { mockMessages } from "../test/mockMessages.js";
 import { listSenderMenu } from "../cli/senderMenu.js";
-import { searchMenu } from "../cli/searchMenu.js"; 
+import { searchMenu } from "../cli/searchMenu.js";
 
+import { statisticsMenu } from "../cli/statisticsMenu.js";
+import { initializeStatistics } from "../services/statisticsService.js";
 
 export async function startMenu(gmailClient, {mockMode = false} = {}){
   const rl = readline.createInterface({input, output});
   
-
+  const messages = mockMessages;
+  initializeStatistics(messages);
   try {
     let running = true;
-
+    
     while (running) {
       console.log("========== Main Menu ======");
       console.log("1. List emails by sender");
@@ -26,7 +29,6 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
         break;
       }
       // Another Choice here allow the user to grab
-      const messages = mockMessages;
       switch (choice.trim())
       {
         case "1":
@@ -36,10 +38,11 @@ export async function startMenu(gmailClient, {mockMode = false} = {}){
         case "2":
           console.log("Loading search bar ...");
           await searchMenu(messages, rl, gmailClient);
-        break;
+          break;
         case "3":
           console.log("Loading cleanup statistics ...");
-        break;
+          await statisticsMenu(rl);
+          break;
         case "4":
           console.log("Goodbye!");
           running = false;

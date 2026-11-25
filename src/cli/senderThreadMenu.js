@@ -1,4 +1,5 @@
-import { trashMessages } from "../services/deleteMessages.js"
+import { trashMessages } from "../services/deleteMessages.js";
+import { recordDeletion } from "../services/statisticsService.js";
 
 export async function viewSenderThreads(sender, rl, gmail)
 {
@@ -122,6 +123,8 @@ export async function viewSenderThreads(sender, rl, gmail)
         }
 
         const { deletedIds, failedIds} = await trashMessages(gmail, [...selectedMessageIds]);
+
+        recordDeletion(messages,deletedIds,failedIds);
 
         //Remove successfully trashed messages from the local list        
         const deletedSet = new Set(deletedIds);
