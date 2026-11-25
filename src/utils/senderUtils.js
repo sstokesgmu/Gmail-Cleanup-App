@@ -35,13 +35,10 @@ export function parseSender(from){
 /**
  * Group messages by sender email address.
  */
-
-export function groupBySender(messages){
+export function groupBySender(messages) {
   const senders = new Map();
 
-  
-  for(const message of messages)
-  {
+  for (const message of messages) {
     let sender;
 
     try {
@@ -51,10 +48,10 @@ export function groupBySender(messages){
       continue;
     }
 
-    if(!senders.has(sender.email)) {
+    if (!senders.has(sender.email)) {
       senders.set(sender.email, {
-        name: sender.name, 
-        email: sender.email, 
+        name: sender.name,
+        email: sender.email,
         count: 0,
         messages: []
       });
@@ -66,14 +63,11 @@ export function groupBySender(messages){
     group.messages.push(message);
   }
 
-
-  //Sort senders by the number of messages 
-  let c = [...senders.values()].sort(
-    (a,b) => b.count - a.count
+  // Sort senders by the number of messages
+  return [...senders.values()].sort(
+    (a, b) => b.count - a.count
   );
-  return 
 }
-
 
 /**
  * Retrieve Gmail messages and group them by sender. 
