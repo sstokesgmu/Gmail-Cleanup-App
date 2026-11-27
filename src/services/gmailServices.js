@@ -65,6 +65,33 @@ export async function listMessages(gmail,
 }
 
 /**
+ * Retrieve all matching message references across
+ * multiple pages of Gmail results 
+ *
+ * @param {object} gmail - Authenticated Gmail client 
+ * @param {object} options - Search configuration 
+ */ 
+
+export async function listAllMessages (gmail, {maxResults = 100, query = "-in:trash -in:spam -in:sent -in:drafts"} = {}){
+  const allMessages = [];
+  let pageToken; 
+
+  do {
+    const result = await listMessages(gmail, {
+      maxResults, pageToken, query
+    });
+
+    allMessages.push(...result.messages);
+
+    pageToken = result.nextPageToken;
+  } while (pageToken);
+
+  return allMessages;
+}
+
+
+
+/**
  * Retrieve message metadata using its Gmail ID.
  */
 
@@ -97,3 +124,25 @@ export async function getMessage(gmail, message_id){
     labels: message.labelIds ?? []
   };
 }
+
+/**
+ * Retrieve normalized metadata for all matching
+ * Gmail messages.
+ *
+ * @param {object} gmail - Authenticated Gmail client 
+ * @param {object} options - Search configuration 
+ */
+export async function getAllMessages(gmail, options = {}){
+  const messageRefs = await listAllMessages(gmail, options);
+
+  const messages = [];
+
+  for (const ref of messageRefs){
+    const message = await getMessage(gmail, ref.id);
+
+    messages.push(message);
+  }
+  return messages;
+}
+
+
