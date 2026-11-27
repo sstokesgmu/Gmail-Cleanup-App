@@ -45,23 +45,22 @@ export function recordDeletion(messages, deletedIds, failedIds){
 }
 
 // Retrieve current session statistics 
-
 export function getStatistics(){
   const remainingEmailCount = statistics.initialEmailCount - statistics.deletedCount;
 
-  const cleanupPrecentage = statistics.initialEmailCount === 0 ? 0 : (statistics.deletedCount/statistics.initialEmailCount) * 100;
+  const cleanupPercentage = statistics.initialEmailCount === 0 ? 0 : (statistics.deletedCount/statistics.initialEmailCount) * 100;
 
   return {
-    initialEmailCount : statistics.initialEmailCount, 
-    remainingEmailCount,
+    initialEmailCount : statistics.initialEmailCount,
+    remainingEmailCount, 
     deletedCount: statistics.deletedCount,
     failedCount: statistics.failedCount,
-    cleanupPrecentage,
+    cleanupPercentage,
     sessionStartedAt: statistics.sessionStartedAt,
 
-    deletedBySender: [...statistics.deletedBySender.entries()].map(([email,count])=> ({
-      email,
+    deletedBySender: [...statistics.deletedBySender.entries()].map(([email, count]) =>({
+      email, 
       count
     })).sort((a,b) => b.count - a.count)
-  }
+  };
 }
